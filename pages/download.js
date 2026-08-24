@@ -3,14 +3,16 @@ import { useEffect } from "react";
 
 export default function Download() {
   useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.vendor;
+    const userAgent = navigator.userAgent || navigator.vendor || "";
 
     if (/android/i.test(userAgent)) {
-      window.location.href =
-        "https://play.google.com/store/apps/details?id=com.kiloo.subwaysurf";
+      window.location.replace(
+        "https://play.google.com/store/apps/details?id=com.kiloo.subwaysurf"
+      );
     } else if (/iPhone|iPad|iPod/i.test(userAgent)) {
-      window.location.href =
-        "https://apps.apple.com/in/app/drjiva/id6795009333";
+      window.location.replace(
+        "https://apps.apple.com/in/app/drjiva/id6795009333"
+      );
     }
   }, []);
 
@@ -51,6 +53,7 @@ export default function Download() {
         <a
           href="https://play.google.com/store/apps/details?id=com.kiloo.subwaysurf"
           style={{
+            display: "inline-block",
             margin: "10px",
             padding: "14px 24px",
             background: "#000",
@@ -65,6 +68,7 @@ export default function Download() {
         <a
           href="https://apps.apple.com/in/app/drjiva/id6795009333"
           style={{
+            display: "inline-block",
             margin: "10px",
             padding: "14px 24px",
             background: "#000",

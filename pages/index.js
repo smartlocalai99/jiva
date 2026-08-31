@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useEffect } from "react";
 
 const ANDROID_URL =
-  "https://play.google.com/store/apps/details?id=com.kiloo.subwaysurf";
+  "https://play.google.com/store/apps/details?id=com.drjiva.patient&pcampaignid=web_share";
 
 const IOS_URL =
   "https://apps.apple.com/in/app/drjiva/id6795009333";
@@ -25,10 +25,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Download App</title>
+        <title>Download Dr. Jiva</title>
         <meta
           name="description"
-          content="Download the app for your device"
+          content="Download Dr. Jiva for Android or iPhone"
         />
         <meta
           name="viewport"
@@ -48,7 +48,7 @@ export default function Home() {
           fontFamily: "Arial, sans-serif",
         }}
       >
-        <h1>Download App</h1>
+        <h1>Download Dr. Jiva</h1>
 
         <p>Redirecting you to the correct app store...</p>
 

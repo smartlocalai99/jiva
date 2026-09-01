@@ -101,6 +101,7 @@
 
 
 import Head from "next/head";
+import { useEffect } from "react";
 
 const ANDROID_URL =
   "https://play.google.com/store/apps/details?id=com.drjiva.patient";
@@ -111,17 +112,7 @@ const IOS_URL =
 export async function getServerSideProps({ req }) {
   const userAgent = req.headers["user-agent"] || "";
 
-  // ANDROID ONLY
-  if (/android/i.test(userAgent)) {
-    return {
-      redirect: {
-        destination: ANDROID_URL,
-        permanent: false,
-      },
-    };
-  }
-
-  // Keep iPhone/iPad exactly as before
+  // iOS → App Store directly
   if (/iPhone|iPad|iPod/i.test(userAgent)) {
     return {
       redirect: {
@@ -131,12 +122,43 @@ export async function getServerSideProps({ req }) {
     };
   }
 
+  // Android → render page so we can use Android intent
+  if (/android/i.test(userAgent)) {
+    return {
+      props: {
+        android: true,
+      },
+    };
+  }
+
   return {
-    props: {},
+    props: {
+      android: false,
+    },
   };
 }
 
-export default function Home() {
+export default function Home({ android }) {
+  useEffect(() => {
+    if (!android) return;
+
+    // Try opening Google Play Store app
+    const playStoreIntent =
+      "intent://details?id=com.drjiva.patient" +
+      "#Intent;scheme=market;" +
+      "package=com.android.vending;" +
+      "end";
+
+    window.location.href = playStoreIntent;
+
+    // Fallback to Play Store website
+    const fallbackTimer = setTimeout(() => {
+      window.location.href = ANDROID_URL;
+    }, 1500);
+
+    return () => clearTimeout(fallbackTimer);
+  }, [android]);
+
   return (
     <>
       <Head>
@@ -167,39 +189,60 @@ export default function Home() {
         <div>
           <h1>Download Dr. Jiva</h1>
 
-          <p>
-            Please select your device.
-          </p>
+          {android ? (
+            <>
+              <p>Opening Google Play Store...</p>
 
-          <a
-            href={ANDROID_URL}
-            style={{
-              display: "block",
-              margin: "10px",
-              padding: "14px 24px",
-              background: "#000",
-              color: "#fff",
-              textDecoration: "none",
-              borderRadius: "8px",
-            }}
-          >
-            Android — Google Play
-          </a>
+              <a
+                href={ANDROID_URL}
+                style={{
+                  display: "inline-block",
+                  marginTop: "15px",
+                  padding: "14px 24px",
+                  background: "#000",
+                  color: "#fff",
+                  textDecoration: "none",
+                  borderRadius: "8px",
+                }}
+              >
+                Open Google Play
+              </a>
+            </>
+          ) : (
+            <>
+              <p>Please select your device.</p>
 
-          <a
-            href={IOS_URL}
-            style={{
-              display: "block",
-              margin: "10px",
-              padding: "14px 24px",
-              background: "#000",
-              color: "#fff",
-              textDecoration: "none",
-              borderRadius: "8px",
-            }}
-          >
-            iPhone — App Store
-          </a>
+              <a
+                href={ANDROID_URL}
+                style={{
+                  display: "block",
+                  margin: "10px",
+                  padding: "14px 24px",
+                  background: "#000",
+                  color: "#fff",
+                  textDecoration: "none",
+                  borderRadius: "8px",
+                }}
+              >
+                Android — Google Play
+              </a>
+
+              <a
+                href={IOS_URL}
+                style={{
+                  display: "block",
+                  margin: "10px",
+                  padding: "14px 24px",
+                  background: "#000",
+                  color: "#fff",
+                  textDecoration: "none",
+                  borderRadius: "8px",
+                }}
+              >
+                iPhone — App Store
+              </a>
+            </>
+          )}
         </div>
       </main>
     </>

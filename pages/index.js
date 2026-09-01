@@ -101,7 +101,6 @@
 
 
 import Head from "next/head";
-import { useEffect } from "react";
 
 const ANDROID_URL =
   "https://play.google.com/store/apps/details?id=com.drjiva.patient";
@@ -109,29 +108,35 @@ const ANDROID_URL =
 const IOS_URL =
   "https://apps.apple.com/in/app/drjiva/id6795009333";
 
+export async function getServerSideProps({ req }) {
+  const userAgent = req.headers["user-agent"] || "";
+
+  // ANDROID ONLY
+  if (/android/i.test(userAgent)) {
+    return {
+      redirect: {
+        destination: ANDROID_URL,
+        permanent: false,
+      },
+    };
+  }
+
+  // Keep iPhone/iPad exactly as before
+  if (/iPhone|iPad|iPod/i.test(userAgent)) {
+    return {
+      redirect: {
+        destination: IOS_URL,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
 export default function Home() {
-  useEffect(() => {
-    const ua = navigator.userAgent || navigator.vendor || "";
-
-    if (/android/i.test(ua)) {
-      // Open Google Play Store app
-      window.location.href =
-        "market://details?id=com.drjiva.patient";
-
-      // Fallback to Google Play web page
-      setTimeout(() => {
-        window.location.href = ANDROID_URL;
-      }, 1500);
-
-      return;
-    }
-
-    if (/iPhone|iPad|iPod/i.test(ua)) {
-      window.location.replace(IOS_URL);
-      return;
-    }
-  }, []);
-
   return (
     <>
       <Head>
@@ -139,7 +144,7 @@ export default function Home() {
 
         <meta
           name="description"
-          content="Download Dr. Jiva for Android or iPhone"
+          content="Download Dr. Jiva"
         />
 
         <meta
@@ -152,19 +157,20 @@ export default function Home() {
         style={{
           minHeight: "100vh",
           display: "flex",
-          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          padding: "20px",
-          textAlign: "center",
           fontFamily: "Arial, sans-serif",
+          textAlign: "center",
+          padding: "20px",
         }}
       >
-        <h1>Download Dr. Jiva</h1>
+        <div>
+          <h1>Download Dr. Jiva</h1>
 
-        <p>Redirecting you to the app store...</p>
+          <p>
+            Please select your device.
+          </p>
 
-        <div style={{ marginTop: "20px" }}>
           <a
             href={ANDROID_URL}
             style={{

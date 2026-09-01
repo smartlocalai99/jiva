@@ -100,7 +100,6 @@
 
 
 
-
 import Head from "next/head";
 import { useEffect } from "react";
 
@@ -115,19 +114,13 @@ export default function Home() {
     const ua = navigator.userAgent || navigator.vendor || "";
 
     if (/android/i.test(ua)) {
-      // Try opening the Google Play Store app directly
-      const playStoreIntent =
-        "intent://details?id=com.drjiva.patient#Intent;" +
-        "scheme=market;" +
-        "package=com.android.vending;" +
-        "end";
+      // Open Google Play Store app
+      window.location.href =
+        "market://details?id=com.drjiva.patient";
 
-      window.location.href = playStoreIntent;
-
-      // Fallback to Google Play webpage if the Play Store app
-      // does not open
+      // Fallback to Google Play web page
       setTimeout(() => {
-        window.location.replace(ANDROID_URL);
+        window.location.href = ANDROID_URL;
       }, 1500);
 
       return;
@@ -169,7 +162,7 @@ export default function Home() {
       >
         <h1>Download Dr. Jiva</h1>
 
-        <p>Redirecting you to the correct app store...</p>
+        <p>Redirecting you to the app store...</p>
 
         <div style={{ marginTop: "20px" }}>
           <a
@@ -206,4 +199,3 @@ export default function Home() {
     </>
   );
 }
-
